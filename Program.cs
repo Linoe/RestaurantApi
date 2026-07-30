@@ -15,9 +15,16 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 開發環境測試用功能
 if (app.Environment.IsDevelopment())
 {
+    // 起始資料庫不存在資料時，自動新增測試資料
+    using (IServiceScope scope = app.Services.CreateScope())
+    {
+        RestaurantDbContext dbContext = scope.ServiceProvider.GetRequiredService<RestaurantDbContext>();
+        DbInitializer.Seed(dbContext);
+    }
+    // 啟用 Swagger
     app.UseSwagger();
     app.UseSwaggerUI();
 }
