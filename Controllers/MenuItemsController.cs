@@ -16,10 +16,18 @@ public class MenuItemsController : ControllerBase
         this.dbContext = dbContext;
     }
 
+    // GET /api/menuitems?categoryId=1
     [HttpGet]
-    public async Task<ActionResult<List<MenuItemDto>>> GetMenuItems()
+    public async Task<ActionResult<List<MenuItemDto>>> GetMenuItems([FromQuery] int? categoryId)
     {
-        List<MenuItemDto> items = await dbContext.MenuItems
+        // 如果網址帶有 categoryId 額外查找
+        IQueryable<MenuItem> query = dbContext.MenuItems.AsNoTracking();
+        if (categoryId.HasValue)
+        {
+            query = query.Where(item => item.CategoryId == categoryId.Value);
+        }
+
+        List<MenuItemDto> items = await query
             .Select(menuItem => new MenuItemDto()
             {
                 Id = menuItem.Id,
