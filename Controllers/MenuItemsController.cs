@@ -35,6 +35,32 @@ public class MenuItemsController : ControllerBase
         return Ok(items);
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<MenuItemDto>> GetMenuItem(int id)
+    {
+        MenuItem? item = await dbContext.MenuItems
+            .Include(menuItem => menuItem.Category)
+            .FirstOrDefaultAsync(menuItem => menuItem.Id == id);
+
+        if (item == null)
+        {
+            return NotFound();
+        }
+
+        MenuItemDto result = new()
+        {
+            Id = item.Id,
+            Name = item.Name,
+            Description = item.Description,
+            Price = item.Price,
+            IsAvailable = item.IsAvailable,
+            CategoryId = item.CategoryId,
+            CategoryName = item.Category?.Name,
+        };
+
+        return Ok(result);
+    }
+
     [HttpPost]
     public async Task<ActionResult<MenuItemDto>> CreateMenuItem(CreateMenuItemDto request)
     {
@@ -77,5 +103,46 @@ public class MenuItemsController : ControllerBase
         };
 
         return Ok(result);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateMenuItem(int id, UpdateMenuItemDto request)
+    {
+        MenuItem? item = await dbContext.MenuItems.FindAsync(id);
+        if (item == null)
+        {
+            return NotFound();
+        }
+
+        // 檢查外鍵 CategoryId 存在
+        if (!await dbContext.Categories.AnyAsync(category => category.Id == request.CategoryId))
+        {
+            return BadRequest($"CategoryId {request.CategoryId} 不存在");
+        }
+
+        item.Name = request.Name;
+        item.Description = request.Description;
+        item.Price = request.Price;
+        item.IsAvailable = request.IsAvailable;
+        item.CategoryId = request.CategoryId;
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteMenuItem(int id)
+    {
+        MenuItem? item = await dbContext.MenuItems.FindAsync(id);
+
+        if (item == null)
+        {
+            return NotFound();
+        }
+
+        dbContext.MenuItems.Remove(item);
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
     }
 }

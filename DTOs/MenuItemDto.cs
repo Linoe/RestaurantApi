@@ -27,3 +27,16 @@ public class CreateMenuItemDto
 
     public int CategoryId { get; set; }
 }
+
+public class UpdateMenuItemDto
+{
+    public string Name { get; set; } = string.Empty;
+
+    public string? Description { get; set; }
+
+    public decimal Price{ get; set; }
+
+    public bool IsAvailable { get; set; }
+
+    public int CategoryId { get; set; }
+}
