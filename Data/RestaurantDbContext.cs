@@ -29,6 +29,22 @@ public class RestaurantDbContext : DbContext
             .HasForeignKey(item => item.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<OrderItem>()
+            .Property(item => item.UnitPrice)
+            .HasPrecision(10, 2);
+
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(orderItem => orderItem.Order)
+            .WithMany(order => order.Items)
+            .HasForeignKey(orderItem => orderItem.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(orderItem => orderItem.MenuItem)
+            .WithMany()
+            .HasForeignKey(orderItem => orderItem.MenuItemId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         base.OnModelCreating(modelBuilder);
     }
 }
