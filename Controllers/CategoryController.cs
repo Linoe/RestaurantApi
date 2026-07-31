@@ -17,17 +17,37 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Category>>> GetCategories()
+    public async Task<ActionResult<List<CategoryDto>>> GetCategories()
     {
-        List<Category> items = await dbContext.Categories.ToListAsync();
-        return Ok(items);
+        List<CategoryDto> categories = await dbContext.Categories
+            .Select(category => new CategoryDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+            })
+            .ToListAsync();
+
+
+        return Ok(categories);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Category>> CreateCategory(Category item)
+    public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryDto request)
     {
-        dbContext.Categories.Add(item);
+        Category category = new()
+        {
+            Name = request.Name,
+        };
+
+        dbContext.Categories.Add(category);
         await dbContext.SaveChangesAsync();
-        return Ok(item);
+
+        CategoryDto result = new()
+        {
+            Id = category.Id,
+            Name = category.Name,
+        };
+
+        return Ok(result);
     }
 }
