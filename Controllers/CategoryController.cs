@@ -31,6 +31,25 @@ public class CategoryController : ControllerBase
         return Ok(categories);
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<CategoryDto>> GetCategory(int id)
+    {
+        Category? category = await dbContext.Categories.FindAsync(id);
+
+        if (category == null)
+        {
+            return NotFound();
+        }
+
+        CategoryDto result = new()
+        {
+            Id = category.Id,
+            Name = category.Name,
+        };
+
+        return Ok(result);
+    }
+
     [HttpPost]
     public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryDto request)
     {
@@ -49,5 +68,37 @@ public class CategoryController : ControllerBase
         };
 
         return Ok(result);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateCategory(int id, CreateCategoryDto request)
+    {
+        Category? category = await dbContext.Categories.FindAsync(id);
+
+        if (category == null)
+        {
+            return NotFound();
+        }
+
+        category.Name = request.Name;
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteCategory(int id)
+    {
+        Category? category = await dbContext.Categories.FindAsync(id);
+
+        if (category == null)
+        {
+            return NotFound();
+        }
+
+        dbContext.Categories.Remove(category);
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
     }
 }
