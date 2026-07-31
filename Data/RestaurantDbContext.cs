@@ -15,6 +15,16 @@ public class RestaurantDbContext : DbContext
     {
         // 資料庫模型規則設定
 
+        modelBuilder.Entity<MenuItem>()
+            .Property(item => item.Price)
+            .HasPrecision(10, 2);
+
+        modelBuilder.Entity<MenuItem>()
+            .HasOne(item => item.Category)
+            .WithMany(category => category.MenuItems)
+            .HasForeignKey(item => item.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         base.OnModelCreating(modelBuilder);
     }
 }
