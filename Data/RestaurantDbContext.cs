@@ -10,4 +10,11 @@ public class RestaurantDbContext : DbContext
     public DbSet<Category> Categories => Set<Category>();
 
     public DbSet<MenuItem> MenuItems => Set<MenuItem>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // 資料庫模型規則設定
+
+        base.OnModelCreating(modelBuilder);
+    }
 }
