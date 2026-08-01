@@ -8,3 +8,4 @@ obj/
 .git/
 .gitignore
 README.md
+appsettings.Development.json
