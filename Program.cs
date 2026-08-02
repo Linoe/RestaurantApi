@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 註冊 RestaurantDbContext
 builder.Services.AddDbContext<RestaurantDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
