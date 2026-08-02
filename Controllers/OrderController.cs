@@ -72,7 +72,7 @@ public class OrderController : ControllerBase
         {
             CustomerName = request.CustomerName,
             Status = OrderStatus.Pending,
-            CreatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
         };
 
         // 建立訂單中餐點資訊
