@@ -3,12 +3,7 @@ using RestaurantApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 環境 Render 動態 port，否則 8080
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-builder.WebHost.UseUrls($"http://+:{port}");
-
-
-// 註冊 RestaurantDbContext
+// 註冊 RestaurantDbContext（連線字串由環境變數 ConnectionStrings__DefaultConnection 注入）
 builder.Services.AddDbContext<RestaurantDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
