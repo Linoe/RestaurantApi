@@ -13,5 +13,7 @@ COPY --from=build /app .
 
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
+ENV DOTNET_hostBuilder__reloadConfigOnChange=false
+ENV ASPNETCORE_ENVIRONMENT=Development
 
 ENTRYPOINT ["dotnet", "RestaurantApi.dll"]
