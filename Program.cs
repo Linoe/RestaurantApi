@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using RestaurantApi.Data;
 
@@ -28,6 +29,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// EB ALB 做 SSL 終止後以 HTTP 轉發，需還原原始 Scheme 避免誤判導致重導向迴圈
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseHttpsRedirection(); // 判斷是否為 HTTPS 並重導向
 app.MapControllers();
