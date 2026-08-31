@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 開發環境測試用功能
+// 開發環境測試用功能，由於是在 UseHttpsRedirection() 之前啟用，因此會透過 HTTP 直接存取
 if (app.Environment.IsDevelopment())
 {
     // 起始資料庫不存在資料時，自動新增測試資料
@@ -29,8 +29,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection(); // 判斷是否為 HTTPS 並重導向
 app.MapControllers();
-
-app.UseHttpsRedirection();
 
 app.Run();
